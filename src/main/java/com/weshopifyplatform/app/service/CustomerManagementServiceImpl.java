@@ -5,11 +5,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.weshopifyplatform.app.beans.AuthenticationBean;
 import com.weshopifyplatform.app.beans.CustomerBean;
+import com.weshopifyplatform.app.models.Customer;
+import com.weshopifyplatform.app.repos.CustomerRepository;
 
 @Service
 public class CustomerManagementServiceImpl implements CustomerManagementService {
@@ -18,6 +21,9 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	//why this as an in memeory database and TreeHashmap could have been a better choice why?
 	//
 	private static LinkedHashMap<String,CustomerBean> CUSTOMER_IN_MEMORY_DB = new LinkedHashMap<>();
+	
+	@Autowired
+	private CustomerRepository customerRepo;
 
 	@Override
 	public CustomerBean registerCustomer(CustomerBean customerBean) {
@@ -66,6 +72,33 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	@Override
 	public CustomerBean findCustomerById(String customerId) {
 		return CUSTOMER_IN_MEMORY_DB.get(customerId);
+	}
+	
+	
+	private Customer mapBeanToEntity(CustomerBean customerBean) {
+		
+		Customer customer = new Customer();
+		customer.setFirstName(customerBean.getFirstName());
+		customer.setLastName(customerBean.getLastName());
+		customer.setEmail(customerBean.getEmail());
+		customer.setPassword(customerBean.getPassword());
+		customer.setMobile(customerBean.getMobile());
+		customer.setUserName(customerBean.getUserName());
+		
+		return customer;
+	}
+	
+     private CustomerBean mapEntityToBean(Customer customer) {
+		
+	    CustomerBean customerBean = new CustomerBean();
+	    customerBean.setFirstName(customer.getFirstName());
+	    customerBean.setLastName(customer.getLastName());
+	    customerBean.setEmail(customer.getEmail());
+	    customerBean.setPassword(customer.getPassword());
+	    customerBean.setMobile(customer.getMobile());
+	    customerBean.setUserName(customer.getUserName());
+		
+		return customerBean;
 	}
 	
 	

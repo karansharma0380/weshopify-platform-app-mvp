@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+ 
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link href="../assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/libs/css/style.css">
+    <link rel="stylesheet" href="../assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+    </style>
+</head>
+<!-- ============================================================== -->
+<!-- signup form  -->
+<!-- ============================================================== -->
+
+<body>
+    <!-- ============================================================== -->
+    <!-- signup form  -->
+    <!-- ============================================================== -->
+    <form class="splash-container" th:object="${customerBean}" th:action="@{/signup}">
+		<!--
+			1. th:object="${obj name}" to which we want the field of form bind to the object.
+			2. All the fields of the form should have name attribute equivalent to the attribute of the CustomerBean class(Case-Sensitive)
+			3. th:action="@{/controllerValue}". When we fill the form all the values of the fields gets bind to the object/bean. and sent to us back.
+				So we need a controller to resolve/extract the data we got from the client
+		-->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-1">Registrations Form</h3>
+                <p>Please enter your user information.</p>
+            </div>
+        <div th:text="${message}"> <!--Inside simple HTML tag use th:text=${name of the model object we mentioned}-->
+			
+		</div>
+           <div th:if="${isRegistered}">
+				<font color=""green>
+					<p>Registration Successfull. <a href="./home" class="text-secondary">Login Here.</a></p>
+					
+				</font>
+			</div>
+			<!--<div th:if="${isRegistered}">
+				<font color=""red>
+					<p>Registration Faild. Please try again</p>
+					
+				</font>
+			</div>-->
+            <div class="card-body">
+				
+                <div class="form-group">
+                    <input class="form-control form-control-lg" type="text" name="userName" required="" placeholder="Username" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <input class="form-control form-control-lg" type="email" name="email" required="" placeholder="E-mail" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <input class="form-control form-control-lg" id="pass1" name="password" type="password" required="" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <input class="form-control form-control-lg"  id="mobile" type="text" name="mobile" required="" placeholder="Mobile">
+                </div>
+                <div class="form-group pt-2">
+                    <button class="btn btn-block btn-primary" type="submit">Register My Account</button>
+                </div>
+                <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox"><span class="custom-control-label">By creating an account, you agree the <a href="#">terms and conditions</a></span>
+                    </label>
+                </div>
+                <div class="form-group row pt-0">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-2">
+                        <button class="btn btn-block btn-social btn-facebook " type="button">Facebook</button>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <button class="btn  btn-block btn-social btn-twitter" type="button">Twitter</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <p>Already member? <a href="./home" class="text-secondary">Login Here.</a></p><!--/home means will run the method with
+                	the value /home and we have that method so it will return home.html page-->
+            </div>
+        </div>
+    </form>
+</body>
+
+ 
+</html>

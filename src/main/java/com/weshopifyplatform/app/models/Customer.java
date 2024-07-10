@@ -21,16 +21,16 @@ public class Customer implements Serializable {
 	private static final long serialVersionUID = 2767152150423849249L;
  //Every DB table should have Identity Value.
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id //For making this property primary key. 
+	@GeneratedValue(strategy = GenerationType.AUTO) //Diff DB use different PK generation method so now we dont have to worry about DB type
 	private int custId;
 	
 	
 	
-	private String firstName;
+	private String firstName; // If we don't provide the specific name for the column, this will have first_name at N, _ added  
 	private String lastName;
 	
-	@Column(name = "CustomerLogin", nullable = false,unique = true)
+	@Column(name = "CustomerLogin", nullable = false,unique = true) //cannot be null and always have unique values
 	private String userName;
 	
 	@Column(nullable = false, length=8)
