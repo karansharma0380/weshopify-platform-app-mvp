@@ -74,8 +74,9 @@ public class CustomersController {
 	
 	@RequestMapping(value= {"/editCustomerPage"})
 	public String editCustomerPage(@RequestParam("custId") String customerId, Model model) {
-		model.addAttribute("customerBean", customerManagementService.findCustomerById(customerId));
-		return "edit-customers.html";
+		CustomerBean customerBean = customerManagementService.findCustomerById(customerId);
+		model.addAttribute("customerBean", customerBean);
+		return "add-customers.html";
 	}
 	
 	

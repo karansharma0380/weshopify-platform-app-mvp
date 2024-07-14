@@ -17,39 +17,52 @@ import com.weshopifyplatform.app.repos.CustomerRepository;
 @Service
 public class CustomerManagementServiceImpl implements CustomerManagementService {
 	
-	private static LinkedHashMap<String,CustomerBean> IN_MEMORY_DB= new LinkedHashMap<>();
+	//private static LinkedHashMap<String,CustomerBean> IN_MEMORY_DB= new LinkedHashMap<>();
 	//why this as an in memeory database and TreeHashmap could have been a better choice why?
 	//
-	private static LinkedHashMap<String,CustomerBean> CUSTOMER_IN_MEMORY_DB = new LinkedHashMap<>();
+	//private static LinkedHashMap<String,CustomerBean> CUSTOMER_IN_MEMORY_DB = new LinkedHashMap<>();
 	
 	@Autowired
 	private CustomerRepository customerRepo;
 
 	@Override
 	public CustomerBean registerCustomer(CustomerBean customerBean) {
+//		This is all for the in-memory DB
+//		if(StringUtils.hasText(customerBean.getRole())) {
+//			/*
+//			 *  Customer Registration!
+//			 * */
+//			if(!StringUtils.hasText(customerBean.getId())) {
+//				customerBean.setId(UUID.randomUUID().toString());
+//			}
+//			CUSTOMER_IN_MEMORY_DB.put(customerBean.getId(), customerBean);
+//		}
+//		else {
+//			/*
+//			 *  User Registration
+//			 * */
+//			customerBean.setId(UUID.randomUUID().toString());
+//			IN_MEMORY_DB.put(customerBean.getUserName(), customerBean);
+//			}
+//		return customerBean;
 		
-		if(StringUtils.hasText(customerBean.getRole())) {
-			/*
-			 *  Customer Registration!
-			 * */
-			if(!StringUtils.hasText(customerBean.getId())) {
-				customerBean.setId(UUID.randomUUID().toString());
-			}
-			CUSTOMER_IN_MEMORY_DB.put(customerBean.getId(), customerBean);
+		if(!StringUtils.hasText(customerBean.getRole())) {
+			customerBean.setRole("user");
 		}
-		else {
-			/*
-			 *  User Registration
-			 * */
-			customerBean.setId(UUID.randomUUID().toString());
-			IN_MEMORY_DB.put(customerBean.getUserName(), customerBean);
-			}
+		
+		Customer customer = mapBeanToEntity(customerBean); // Mapped our bean from user data to customer entity
+		customerRepo.save(customer); //Save to the database
+		customerBean = mapEntityToBean(customer); //Now this bean will have ID our database has to the entity. 
+		
 		return customerBean;
 	}
 
 	@Override
 	public AuthenticationBean authenticateBean(AuthenticationBean authenticationBean) {
-		CustomerBean custB = IN_MEMORY_DB.get(authenticationBean.getUserName());
+		
+		Customer custB  = customerRepo.findCustomerByUserName(authenticationBean.getUserName());
+		
+		//CustomerBean custB = IN_MEMORY_DB.get(authenticationBean.getUserName()); in-Memory DB
 		if(custB!=null && custB.getPassword().equals(authenticationBean.getPassword())) {
 			authenticationBean.setAuthenticated(true);
 		}
@@ -58,26 +71,43 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 
 	@Override
 	public List<CustomerBean> findAllCustomer() {
-		List<CustomerBean> customerList = new ArrayList<>();
-		customerList.addAll(CUSTOMER_IN_MEMORY_DB.values());
-		return customerList;
+		// this .findAll() will return an Iterable object means you can loop over it
+		//Since this is coming from the DB, it will be cusomter Object. 
+		// so need to map it to customerBean
+		
+		Iterable<Customer> customerList =  customerRepo.findAll();
+		
+		List<CustomerBean> customerBeanList = new ArrayList<>();
+		customerList.forEach(customerEntity -> {
+			CustomerBean customerBean = mapEntityToBean(customerEntity);
+			customerBeanList.add(customerBean);
+		});
+		
+		//customerList.addAll(CUSTOMER_IN_MEMORY_DB.values());
+		return customerBeanList;
 	}
 
 	@Override
 	public List<CustomerBean> deleteCustomerById(String custId) {
-		CUSTOMER_IN_MEMORY_DB.remove(custId);
+		//CUSTOMER_IN_MEMORY_DB.remove(custId);
+		customerRepo.deleteById(Integer.valueOf(custId));
 		return findAllCustomer();
 	}
 
 	@Override
 	public CustomerBean findCustomerById(String customerId) {
-		return CUSTOMER_IN_MEMORY_DB.get(customerId);
+		Customer customer = customerRepo.findById(Integer.valueOf(customerId)).get();
+		//return CUSTOMER_IN_MEMORY_DB.get(customerId);
+		return mapEntityToBean(customer);
 	}
 	
 	
 	private Customer mapBeanToEntity(CustomerBean customerBean) {
 		
 		Customer customer = new Customer();
+		if(customerBean.getId()!=null ) {
+			customer.setCustId(Integer.valueOf(customerBean.getId()));
+		}
 		customer.setFirstName(customerBean.getFirstName());
 		customer.setLastName(customerBean.getLastName());
 		customer.setEmail(customerBean.getEmail());
@@ -97,6 +127,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	    customerBean.setPassword(customer.getPassword());
 	    customerBean.setMobile(customer.getMobile());
 	    customerBean.setUserName(customer.getUserName());
+	    customerBean.setId(String.valueOf(customer.getCustId()));
 		
 		return customerBean;
 	}

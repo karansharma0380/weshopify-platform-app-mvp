@@ -33,7 +33,7 @@ public class Customer implements Serializable {
 	@Column(name = "CustomerLogin", nullable = false,unique = true) //cannot be null and always have unique values
 	private String userName;
 	
-	@Column(nullable = false, length=8)
+	@Column(nullable = false)
 	private String password;
 	
 	@Column(unique = true,nullable =false)
