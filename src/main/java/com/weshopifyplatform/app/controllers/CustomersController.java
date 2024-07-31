@@ -79,5 +79,35 @@ public class CustomersController {
 		return "add-customers.html";
 	}
 	
+	@RequestMapping(value= {"/view-customers"})
+	public String viewAllPagingCustomers(
+		    @RequestParam("pageNum") int currPage,
+		    @RequestParam("noOfRecPerPage") int noOfRecPerPage,
+		    Model model
+		) {
+		
+		noOfRecPerPage=2;
+			boolean customersFound = false;
+			if(currPage!=0) {
+				currPage = currPage-1;
+			}
+		    List<CustomerBean> customerList = customerManagementService.findAllCustomer(currPage, noOfRecPerPage);
+		    
+		    if(!CollectionUtils.isEmpty(customerList)) {
+		    	model.addAttribute("listOfCustomers", customerList);
+		    	customersFound=true;
+		    }
+		    
+		    model.addAttribute("customersFound", customersFound);
+
+		    List<CustomerBean> totalCustomersList = customerManagementService.findAllCustomer();
+		    int totalCustomersCount = totalCustomersList.size();
+		    int totalNoOfPages = (int) Math.ceil((double) totalCustomersCount / noOfRecPerPage);
+
+		    model.addAttribute("totalRecInDB", totalCustomersCount);
+		    model.addAttribute("totalPages", totalNoOfPages);
+		    return "list-customers.html";
+		}
+
 	
 }

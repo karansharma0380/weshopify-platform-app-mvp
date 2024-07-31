@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -28,7 +32,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	@Override
 	public CustomerBean registerCustomer(CustomerBean customerBean) {
 //		This is all for the in-memory DB
-//		if(StringUtils.hasText(customerBean.getRole())) {
+//		if(StringUtils.hasText(customerBeanplaydesi.getRole())) {
 //			/*
 //			 *  Customer Registration!
 //			 * */
@@ -130,6 +134,23 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	    customerBean.setId(String.valueOf(customer.getCustId()));
 		
 		return customerBean;
+	}
+
+	@Override
+	public List<CustomerBean> findAllCustomer(int currPage, int noOfRecPerPage) {
+		// TODO Auto-generated method stub
+		PageRequest page = PageRequest.of(currPage, noOfRecPerPage);
+		//Page<Customer> customerPage = customerRepo.findAll(page);
+		//List<Customer> customersList = customerPage.getContent();
+
+		List<Customer> customersList = customerRepo.findAll(Sort.by(Direction.DESC, "email"));
+		List<CustomerBean> custBList = new ArrayList<>();
+		customersList.forEach(customerEntity -> {
+			CustomerBean customerBean = mapEntityToBean(customerEntity);
+			custBList.add(customerBean);
+		});
+		
+		return custBList;
 	}
 	
 	

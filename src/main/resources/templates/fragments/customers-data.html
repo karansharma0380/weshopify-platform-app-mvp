@@ -62,6 +62,35 @@
 								</tbody>
 							</table>
 						</div>
+						<div class ="btn-group">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+							         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							         NoOfRecordPerPage
+							         </button>
+							         <div class="dropdown-menu" aria-labelledby="dropdownMenuButtom">
+										 <a class="dropdown-item" th:href="@{'/view-customers?pageNum=0&noOfRecPerPage=2'}">2</a>
+										  <a class="dropdown-item" th:href="@{'/view-customers?pageNum=0&noOfRecPerPage=10'}">10</a>
+										   <a class="dropdown-item" th:href="@{'/view-customers?pageNum=0&noOfRecPerPage=15'}">15</a>
+									 </div>
+									 
+						</div>
+									 <div class="d-flex justify-content-center">
+										 <nav aria-label="Page navigation example">
+											 <ul class="pagination">
+											 <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+											 <div th:each="page:${#numbers.sequence(1, 3)}">
+												 <li class="page-item"><a class="page-link" 
+												 th:href="@{'/view-customers?pageNum='+${page}+'&noOfRecPerPage=' + ${noOfRecPerPage}}">
+													 <span th:text="${page}"></span>
+												 </a></li>
+											 </div>
+											 <li class="page-item"><a class="page-link" href="#">Next</a></li>
+											  </ul>
+										 </nav>
+										 
+									 </div>
+										 
+						
 					</div>
 				</div>
 			</div>
