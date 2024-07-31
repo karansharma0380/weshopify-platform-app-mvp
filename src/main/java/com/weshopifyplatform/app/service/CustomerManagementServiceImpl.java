@@ -11,12 +11,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.weshopifyplatform.app.beans.AuthenticationBean;
 import com.weshopifyplatform.app.beans.CustomerBean;
 import com.weshopifyplatform.app.models.Customer;
 import com.weshopifyplatform.app.repos.CustomerRepository;
+
 
 @Service
 public class CustomerManagementServiceImpl implements CustomerManagementService {
@@ -29,7 +32,9 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	@Autowired
 	private CustomerRepository customerRepo;
 
+	//@Transactional not the jakarta one, use the spring one. And is recommended on top of the methods
 	@Override
+	@Transactional(isolation = Isolation.SERIALIZABLE) //This isolation attribute is good for registering a customer.
 	public CustomerBean registerCustomer(CustomerBean customerBean) {
 //		This is all for the in-memory DB
 //		if(StringUtils.hasText(customerBeanplaydesi.getRole())) {
@@ -74,6 +79,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	}
 
 	@Override
+	@Transactional(isolation=Isolation.READ_COMMITTED)
 	public List<CustomerBean> findAllCustomer() {
 		// this .findAll() will return an Iterable object means you can loop over it
 		//Since this is coming from the DB, it will be cusomter Object. 
@@ -92,6 +98,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	}
 
 	@Override
+	@Transactional(isolation=Isolation.SERIALIZABLE)
 	public List<CustomerBean> deleteCustomerById(String custId) {
 		//CUSTOMER_IN_MEMORY_DB.remove(custId);
 		customerRepo.deleteById(Integer.valueOf(custId));
@@ -99,6 +106,7 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	}
 
 	@Override
+	@Transactional(isolation=Isolation.READ_COMMITTED)
 	public CustomerBean findCustomerById(String customerId) {
 		Customer customer = customerRepo.findById(Integer.valueOf(customerId)).get();
 		//return CUSTOMER_IN_MEMORY_DB.get(customerId);
