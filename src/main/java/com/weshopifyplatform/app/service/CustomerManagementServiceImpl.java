@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -31,6 +32,8 @@ public class CustomerManagementServiceImpl implements CustomerManagementService 
 	
 	@Autowired
 	private CustomerRepository customerRepo;
+	
+	private TransactionDefinition td;
 
 	//@Transactional not the jakarta one, use the spring one. And is recommended on top of the methods
 	@Override
